@@ -1,0 +1,94 @@
+<body>
+  <div id="main-container" class="container py-5">
+  
+    <div class="row text-center text-white mb-3">
+      <div class="col-lg-8 mx-auto">
+        <h1 class="display-3 pb-5">Currency requester</h1>
+        <div class="text-white font-weight-light">
+          Value of the last requested currency {{ requestedCurrencyCode }}
+        </div>
+        <h1 *ngIf="requestedCurrencyValue != null" class="text-center">1 {{ requestedCurrencyCode }} = {{ requestedCurrencyValue }} PLN</h1>
+        <h1 *ngIf="requestedCurrencyValue == null" class="text-center"><i class="fa-solid fa-minus"></i></h1>
+      </div>
+    </div>
+
+    <div class="container mt-4 mb-2" style="width: 80%;">
+      <div class="row align-items-center">
+        <div class="col-md-6">
+          <div class="mb-3">
+            <h5 *ngIf="currencyRequests" class="card-title">Your currency requests<span class="text-muted fw-normal ms-2"> ({{currencyRequests.length}})</span>
+            </h5>
+          </div>
+        </div>
+
+        <div class="col-md-6">
+          <div class="d-flex flex-wrap align-items-center justify-content-end gap-2">
+            <div>
+              <button type="button" class="btn btn-sm text-white" (click)="onOpenRequestModal()">
+                <i class="fa-solid fa-plus mr-2"></i>New currency request
+              </button>
+            </div>
+            <form class="form-inline my-2 my-lg-0">
+              <input type="search" (ngModelChange)="searchCurrencyRequests(key.value)" #key="ngModel" ngModel
+                    name="key" id="searchName" class="form-control mr-sm-2" placeholder="Find request..." required>
+            </form>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="container">
+      <ul class="timeline">
+        <div *ngFor="let currencyRequest of currencyRequests">
+          <li class="timeline-item bg-white rounded ml-3 p-4 shadow">
+            <div class="timeline-arrow"></div>
+          
+            <div class="d-flex justify-content-between">
+              <div class="title"> 1 {{ currencyRequest?.currency }} = {{ currencyRequest?.value }} PLN </div>
+              <div class="small timestamp"><i class="fa-solid fa-clock mr-2"></i>{{ currencyRequest?.date }}</div>
+            </div>
+
+            <div class="row pt-2">
+                <p class="text-small timestamp mt-0 ml-3 font-weight-light"><i class="fa-solid fa-user mr-2"></i>Requester: <span style="font-weight: 500">{{ currencyRequest?.name }}</span></p>
+            </div>
+          </li>
+        </div>
+      </ul>
+    </div>
+  </div>
+  
+</body>
+
+<!-- Request Modal -->
+<div class="modal fade" id="requestModal" aria-labelledby="requestModalLabel" tabindex="-1" role="dialog"
+  style="margin-top: 10%;" aria-hidden="true">
+  <div class="modal-dialog mt-5" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="requestModalLabel">Request currency value</h5>
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body">
+        <div *ngIf="errorMessage" class="alert alert-danger">{{ errorMessage }}</div>
+        <form #requestForm="ngForm" (ngSubmit)="onGetCurrentCurrencyValue(requestForm)">
+          <div class="form-group">
+            <label for="currency">Currency Code</label>
+            <input type="currency" ngModel name="currency" class="form-control" id="currency"
+                    placeholder="Currency code" required="required">
+          </div>
+          <div class="form-group">
+            <label for="name">Name</label>
+            <input type="name" ngModel name="name" class="form-control" id="name"
+                    placeholder="Your name" required="required">
+          </div>         
+          <div class="modal-footer">
+            <button type="button" id="request-form" class="btn btn-secondary" data-dismiss="modal">Close</button>
+            <button [disabled]="requestForm.invalid" type="submit" class="btn btn-primary">Request</button>
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
+</div>
